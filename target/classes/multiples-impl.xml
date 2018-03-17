@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+<configuration doc:name="Configuration">
+        <expression-language>
+            <global-functions>
+                def multInRange(f,c)
+                {
+                    import sandbox.FindingMultiples;
+                    fm = new FindingMultiples();
+                    r = fm.getRange(f,c);
+                    
+                    return fm.multiplesInRange(r);
+                }
+            </global-functions>
+        </expression-language>
+</configuration>
+    <flow name="multiples-implFlow">
+        <logger level="INFO" doc:name="Log Start of Flow" message="multiples-implFlow: Starting flow..."/>
+        <set-variable variableName="floor" value="#[message.inboundProperties.'http.uri.params'.floor]" doc:name="Set Floor Variable"/>
+        <set-variable variableName="ceiling" value="#[message.inboundProperties.'http.uri.params'.ceiling]" doc:name="Set Ceiling Variable"/>
+        <logger level="INFO" doc:name="Log Flow Variables" message="Floor: #[flowVars.floor] Ceiling: #[flowVars.ceiling]"/>
+        <logger message="Starting transformation..." level="INFO" doc:name="Log Start of Transform"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	output: multInRange((flowVars.floor), (flowVars.ceiling))
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="Completing transformation. Payload: #[payload]" level="INFO" doc:name="Log Payload"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <logger message="Post Object to Json. Payload: #[payload]" level="INFO" doc:name="Log Payload"/>
+        <logger level="INFO" doc:name="Log End of Flow" message="multiples-implFlow: Completing Flow..."/>
+    </flow>
+</mule>

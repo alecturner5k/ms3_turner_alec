@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: range-multiples-api
+baseUri: https://mocksvc.mulesoft.com/mocks/39cb6729-7172-4df9-bc14-0eda7c7af4c2 # 
+version: 1.0
+
+/numberRange/{floor}/{ceiling}:
+    uriParameters: 
+      floor: 
+        description: the beginning number for the range of numbers
+        type: integer
+        required: true
+        example: 1
+      ceiling: 
+        description: the end number for the range of numbers
+        type: integer
+        required: true
+        example: 200
+    description: The range of numbers to parse through looking for multiples
+    get:
+      responses: 
+        200:
+          body:
+            application/json:
+            
+
+  
