@@ -15,18 +15,12 @@ public class FindingMultiples {
 			if(numberRange[i] % 3 == 0 && numberRange[i] % 7 == 0)
 			{
 				result.add(numberRange[i] + " : " + "MS3 and ME");
-				i++;
 			}else if(numberRange[i] % 7 == 0)
 			{
 				result.add(numberRange[i] + " : " +  "MS3");
-				i++;
 			}else if(numberRange[i] % 3 == 0)
 			{
 				result.add(numberRange[i] + " : " + "ME");
-				i++;
-			}else
-			{
-				i++;
 			}
 		}
 		
